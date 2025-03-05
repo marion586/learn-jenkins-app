@@ -18,6 +18,11 @@ pipeline {
                     npm run build
                 '''
             }
+            steps {
+                sh '''
+                    test -t build/index.html
+                '''
+            }
         }
     }
 }
