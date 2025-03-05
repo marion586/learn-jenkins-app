@@ -17,17 +17,10 @@ pipeline {
                     npm ci
                     npm run build
                     test -f build/index.html
-                '''
-            }
-          
-        }
-        stage('Test'){
-            steps {
-                sh '''
-                    ls -la
                     npm run test
                 '''
             }
+          
         }
     }
 }
