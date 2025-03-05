@@ -16,13 +16,10 @@ pipeline {
                     npm --version
                     npm ci
                     npm run build
-                '''
-            }
-            steps {
-                sh '''
                     test -t build/index.html
                 '''
             }
+          
         }
     }
 }
