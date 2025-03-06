@@ -72,7 +72,7 @@ pipeline {
             }
             post {
                 always {
-                    publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'HTML Report', reportTitles: '', useWrapperFileDirectly: true])
+                    publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'HTML playwright local Report', reportTitles: '', useWrapperFileDirectly: true])
                 }
             }
         }
@@ -98,7 +98,30 @@ pipeline {
             }
           
         } 
+        stage('Prod E2E'){
+            agent {
+                docker {
+                    image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
+                    reuseNode true
+                }
+            }
+            // the reson is we need t it only here 
+             environment {
+                CI_ENVIRONMENT_URL = "https://majestic-sorbet-2c883e.netlify.app"
+            }
+            steps {
         
+                sh ''' 
+                    npx playwright test --reporter=html
+                '''
+                
+            }
+            post {
+                always {
+                    publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'HTML playwright e2e Report', reportTitles: '', useWrapperFileDirectly: true])
+                }
+            }
+        }
     }
 
     
