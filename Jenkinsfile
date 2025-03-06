@@ -5,8 +5,11 @@ pipeline {
     block 
     comment
     */
+    environment {
+        NETLIFY_SITE_ID = "c34d7660-9d57-4f13-8ba4-10109a276104"
+    }
     stages {
-        stage('Build') {
+        /*stage('Build') {
             agent {
                 docker {
                     image 'node:18-alpine'
@@ -24,7 +27,7 @@ pipeline {
                 '''
             }
           
-        } 
+        }*/ 
         stage('Run Tests') {
             parallel {
             stage('Unit Test'){
@@ -84,8 +87,9 @@ pipeline {
             }
             steps {
                 sh '''
-                    npm install netlify-cli -g
-                    netlify --version
+                    npm install netlify-cli 
+                    node_modules/.bin/netlify --version
+                    echo "Delpoing t production. Site Id: $NETLIFY_SITE_ID"
                 '''
             }
           
