@@ -65,7 +65,6 @@ pipeline {
                 sh '''
                     npm install serve
                     node_modules/.bin/serve -s build &
-                    sleep 10  
                     npx playwright test --reporter=html
                 '''
                 
@@ -88,20 +87,26 @@ pipeline {
             steps {
                 sh '''
                     echo 'Small change'
-                    npm install netlify-cli 
+                    npm install netlify-cli node-jq
                     node_modules/.bin/netlify --version
                     echo "Delpoing to staging. Site Id: $NETLIFY_SITE_ID"
                     node_modules/.bin/netlify status
-                    node_modules/.bin/netlify deploy --dir=build
+                    node_modules/.bin/netlify deploy --dir=build --json > deploy-output.json
+                    node_modules/.bin/node-jq -r '.deploy_url' deploy-output.json
                 '''
             }
           
         }
-        stage ('Approval') {
+        // stage ('Approval') {
+        //     steps {
+        //         timeout(time: 1, unit: 'MINUTES') {
+        //             input message: 'Ready to deploy?', ok: 'Yes , I am sure  i want to deploy'
+        //         }
+        //     }
+        // }
+        stage('Approval') {
             steps {
-                timeout(time: 1, unit: 'MINUTES') {
-                    input message: 'Ready to deploy?', ok: 'Yes , I am sure  i want to deploy'
-                }
+                input message: 'Ready to deploy?', ok: 'Yes , I am sure  i want to deploy'
             }
         }
        stage('Deploy prod') {
